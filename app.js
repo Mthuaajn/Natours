@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const express = require('express');
 const morgan = require('morgan');
 const tourRouter = require('./routers/tourRouter.js');
@@ -23,10 +22,11 @@ app.use((req, res, next) => {
 // Router
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
-  
+
 app.all('*', (req, res, next) => {
   next(new appError(`Can not find ${req.originalUrl} on server`, 404));
 });
 
 app.use(ErrorHandlerController);
 module.exports = app;
+  
