@@ -10,6 +10,13 @@ const DB = process.env.DATABASE.replace(
   process.env.DATABASE_PASSWORD
 );
 
+process.on('uncaughtException', (err) => {
+  // xu li loi vi du nhu console.log(x) -> chua khai bao x
+  console.log('uncaught Exception! 💥 Shutting down...');
+  console.log(err.name, err.message);
+  process.exit(1);
+});
+
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 mongoose
   .connect(DB, {
@@ -20,14 +27,13 @@ mongoose
   })
   .then(() => {
     console.log('connect to database successfully');
-  })
-  .catch((err) => console.log(err));
+  });
 // Start sever
 const server = app.listen(port, () => {
   console.log(`app running on port = ${port}`);
 });
 
-process.on('unhandledRejection', err => {
+process.on('unhandledRejection', (err) => {
   console.log('UNHANDLED REJECTION! 💥 Shutting down...');
   console.log(err.name, err.message);
   server.close(() => {
