@@ -1,5 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
+const dotenv = require('dotenv');
+dotenv.config({ path: './config.env' });
 const tourRouter = require('./routers/tourRouter.js');
 const ErrorHandlerController = require('./controllers/ErrorController.js');
 const userRouter = require('./routers/userRouter.js');
@@ -29,4 +31,3 @@ app.all('*', (req, res, next) => {
 
 app.use(ErrorHandlerController);
 module.exports = app;
-  
