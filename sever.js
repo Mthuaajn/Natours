@@ -28,6 +28,7 @@ mongoose
   .then(() => {
     console.log('connect to database successfully');
   });
+  
 // Start sever
 const server = app.listen(port, () => {
   console.log(`app running on port = ${port}`);
