@@ -1,9 +1,17 @@
-exports.getAllUser = (req, res) => {
-  res.status(500).json({
+const AppError = require('./../utils/appError');
+const catchAsync = require('./../utils/catchAsync');
+const User = require('./../models/UserModels');
+exports.getAllUser = catchAsync(async (req, res) => {
+  const users = await User.find();
+  // SEND RESPONSE
+  res.status(200).json({
     status: 'success',
-    message: 'fail',
+    result: users.length,
+    data: {
+      tours: users,
+    },
   });
-};
+});
 exports.getUser = (req, res) => {
   res.status(500).json({
     status: 'success',
