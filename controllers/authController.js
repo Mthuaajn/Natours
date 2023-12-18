@@ -4,6 +4,7 @@ const catchAsync = require('./../utils/catchAsync');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const AppError = require('./../utils/appError');
+const { decode } = require('punycode');
 dotenv.config({ path: './../config.env' });
 
 const Signtoken = (id) => {
@@ -71,5 +72,15 @@ exports.protect = catchAsync(async (req, res, next) => {
       new AppError('The user belonging to this token does no longer exist', 401)
     );
   }
+
+  // 4) check if user change password after the token was issued
+  if (FreshUser.passwordChangeAfter(decoded.iat)) {
+    return next(
+      new AppError('User recently changed password! Please log in again', 401)
+    );
+  }
+
+  // Grant access to protected route
+  req.user = FreshUser;
   next();
 });
