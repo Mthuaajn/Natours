@@ -4,6 +4,7 @@ const catchAsync = require('./../utils/catchAsync');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const AppError = require('./../utils/appError');
+const sendEmail = require('./../utils/email');
 const { decode } = require('punycode');
 dotenv.config({ path: './../config.env' });
 
@@ -108,6 +109,32 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   const resetToken = user.createPasswordResetToken();
   await user.save({ validateBeforeSave: false });
   // 3) sent it to user's email
+  const resetURL = `${req.protocol}://${req.get(
+    'host'
+  )}/api/v1/users/resetPassword/${resetToken}`;
+
+  const message = `Forgot your password? Submit a Patch request with yours new password and passwordConfirm to ${resetURL}
+  . \nIF you didn't forget your password, please ignore this email!`;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'Yours password reset token (valid for 10 min)',
+      message,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      message: 'token send email',
+    });
+  } catch (err) {
+    user.createPasswordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+    return next(
+      new AppError('there was an error sending the mail. Try again later!', 500)
+    );
+  }
 });
 
 exports.resetPassword = (req, res, next) => {};
