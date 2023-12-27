@@ -3,6 +3,8 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const xss = require('xss-clean');
+const sanitize = require('express-mongo-sanitize');
 dotenv.config({ path: './config.env' });
 const tourRouter = require('./routers/tourRouter.js');
 const ErrorHandlerController = require('./controllers/ErrorController.js');
@@ -14,6 +16,10 @@ process.noDeprecation = true;
 // 1) global middleware
 // middleware set security headers
 app.use(helmet());
+// middleware against nosql injection
+app.use(sanitize());
+// middleware against html injection db
+app.use(xss());
 // middleware write log production and dev
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
