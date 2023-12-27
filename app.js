@@ -5,6 +5,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const xss = require('xss-clean');
 const sanitize = require('express-mongo-sanitize');
+const hpp = require('hpp');
 dotenv.config({ path: './config.env' });
 const tourRouter = require('./routers/tourRouter.js');
 const ErrorHandlerController = require('./controllers/ErrorController.js');
@@ -20,6 +21,19 @@ app.use(helmet());
 app.use(sanitize());
 // middleware against html injection db
 app.use(xss());
+// middleware preventing parameter pollutions
+app.use(
+  hpp({
+    whitelist: [
+      'duration',
+      'ratingsAverage',
+      'ratingsQuantity',
+      'maxGroupSize',
+      'price',
+      'difficulty',
+    ],
+  })
+);
 // middleware write log production and dev
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
