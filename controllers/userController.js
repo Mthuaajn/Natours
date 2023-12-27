@@ -30,6 +30,15 @@ exports.getUser = (req, res) => {
   });
 };
 
+exports.deleteMe = catchAsync(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user.id, { active: false });
+
+  res.status(500).json({
+    status: 'success',
+    data: null,
+  });
+});
+
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1) create error if user update password and passwordConfirm
   if (req.body.password || req.body.passwordConfirm) {
