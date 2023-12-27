@@ -17,6 +17,15 @@ const Signtoken = (id) => {
 
 const createAndSendToken = (user, statusCode, res) => {
   const token = Signtoken(user._id);
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true,
+  };
+  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+  res.cookie('jwt', token, cookieOptions);
+  user.password = undefined;
   res.status(statusCode).json({
     status: 'success',
     token,
@@ -155,7 +164,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     return next(new AppError('token is invalid or has expired ', 400));
   }
 
-  user.passwordConfirm = req.body.passwordConfirm; 
+  user.passwordConfirm = req.body.passwordConfirm;
   user.password = req.body.password;
   user.passwordResetExpires = undefined;
   user.passwordResetToken = undefined;
