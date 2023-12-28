@@ -117,8 +117,9 @@ TourSchema.pre('save', function (next) {
 
 TourSchema.pre('save', async function (next) {
   const guidesPromise = this.guides.map(async (id) => await User.findById(id));
-  const validGuides = guidesPromise.filter((user) => user !== null);
-  this.guides = await Promise.all(validGuides);
+  const validGuides = await Promise.all(guidesPromise);
+  const result = validGuides.filter((user) => user !== null);
+  this.guides = result;
   next();
 });
 // TourSchema.pre('save', function (next) {
