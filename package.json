@@ -6,7 +6,9 @@
   "scripts": {
     "start": " nodemon sever.js",
     "start:prod": "set NODE_ENV=production&& nodemon sever.js",
-    "debug": "ndb sever.js"
+    "debug": "ndb sever.js",
+    "import": "node ./dev-data/data/import-dev-data --import",
+    "delete": "node ./dev-data/data/import-dev-data --delete"
   },
   "author": "minh thuan",
   "license": "ISC",

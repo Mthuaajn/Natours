@@ -34,6 +34,7 @@ const createAndSendToken = (user, statusCode, res) => {
     },
   });
 };
+
 exports.Signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     role: req.body.role,
