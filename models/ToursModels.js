@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const slug = require('slugify');
-const User = require('./../models/UserModels');
+// const User = require('./../models/UserModels');
 const TourSchema = new mongoose.Schema(
   {
     name: {
@@ -101,7 +101,12 @@ const TourSchema = new mongoose.Schema(
         day: Number,
       },
     ],
-    guides: Array,
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -115,13 +120,13 @@ TourSchema.pre('save', function (next) {
   next();
 });
 
-TourSchema.pre('save', async function (next) {
-  const guidesPromise = this.guides.map(async (id) => await User.findById(id));
-  const validGuides = await Promise.all(guidesPromise);
-  const result = validGuides.filter((user) => user !== null);
-  this.guides = result;
-  next();
-});
+// TourSchema.pre('save', async function (next) {
+//   const guidesPromise = this.guides.map(async (id) => await User.findById(id));
+//   const validGuides = await Promise.all(guidesPromise);
+//   const result = validGuides.filter((user) => user !== null);
+//   this.guides = result;
+//   next();
+// });
 // TourSchema.pre('save', function (next) {
 //   console.log('will save document...');
 //   next();
