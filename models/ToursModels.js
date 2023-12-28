@@ -120,6 +120,13 @@ TourSchema.pre('save', function (next) {
   next();
 });
 
+TourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangeAt',
+  });
+  next();
+});
 // TourSchema.pre('save', async function (next) {
 //   const guidesPromise = this.guides.map(async (id) => await User.findById(id));
 //   const validGuides = await Promise.all(guidesPromise);
@@ -157,5 +164,4 @@ TourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 const tour = mongoose.model('Tour', TourSchema);
-
 module.exports = tour;
