@@ -5,7 +5,6 @@ const APIFeatures = require('./../utils/APIFeatures');
 const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 exports.checkId = (req, res, next, val) => {
-  console.log(`this is id: ${val}`);
   let id = req.params.id * 1;
   if (id > tours.length) {
     return res.status(404).json({

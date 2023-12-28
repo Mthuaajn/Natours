@@ -7,9 +7,10 @@ const xss = require('xss-clean');
 const sanitize = require('express-mongo-sanitize');
 const hpp = require('hpp');
 dotenv.config({ path: './config.env' });
-const tourRouter = require('./routers/tourRouter.js');
 const ErrorHandlerController = require('./controllers/ErrorController.js');
+const tourRouter = require('./routers/tourRouter.js');
 const userRouter = require('./routers/userRouter.js');
+const reviewRouter = require('./routers/reviewRoute.js');
 const appError = require('./utils/appError.js');
 const app = express();
 process.noDeprecation = true;
@@ -61,7 +62,7 @@ app.use((req, res, next) => {
 // Router
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
-
+app.use('/api/v1/reviews', reviewRouter);
 app.all('*', (req, res, next) => {
   next(new appError(`Can not find ${req.originalUrl} on server`, 404));
 });
