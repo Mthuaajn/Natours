@@ -5,6 +5,10 @@ const authController = require('./../controllers/authController');
 reviewRouter
   .route('/')
   .get(reviewController.getAllReview)
-  .post(authController.protect, reviewController.createReview);
+  .post(
+    authController.protect,
+    authController.restrictTo('user'),
+    reviewController.createReview
+  );
 
 module.exports = reviewRouter;
