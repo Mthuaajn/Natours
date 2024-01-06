@@ -2,6 +2,7 @@ const express = require('express');
 const tourController = require('./../controllers/tourController');
 const tourRouter = express.Router();
 const authController = require('./../controllers/authController');
+const reviewController = require('./../controllers/reviewController');
 // tourRouter.param('id', tourController.checkId);
 //thống kê chuyến du lịch
 tourRouter.route('/stats-tours').get(tourController.getTourStats);
@@ -27,4 +28,11 @@ tourRouter
     tourController.deleteTour
   );
 
+tourRouter
+  .route('/:tourID/reviews')
+  .post(
+    authController.protect,
+    authController.restrictTo('user'),
+    reviewController.createReview
+  );
 module.exports = tourRouter;
