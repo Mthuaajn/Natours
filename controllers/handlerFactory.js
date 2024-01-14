@@ -57,11 +57,12 @@ exports.getOne = (Model, popOptions) =>
     });
   });
 
-exports.getAll = (Model) =>
+exports.getAll = (Model, popOptions) =>
   catchAsync(async (req, res, next) => {
     let filter = {};
     if (req.params.tourID) filter = { tour: req.params.tourID };
     let query = Model.find(filter);
+    if (popOptions) query = query.populate(popOptions);
     // EXECUTE QUERY
     const features = new APIFeatures(query, req.query)
       .filter()
