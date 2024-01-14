@@ -13,17 +13,21 @@ tourRouter
   .route('/top-5-cheap')
   .get(tourController.aliasTopTours, tourController.getAllTour);
 
+tourRouter.use(authController.protect);
+
 tourRouter
   .route('/')
-  .get(authController.protect, tourController.getAllTour)
-  .post(tourController.createTour);
+  .get(tourController.getAllTour)
+  .post(
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.createTour
+  );
 
 tourRouter
   .route('/:id')
   .get(tourController.getTour)
   .patch(tourController.updateTour)
   .delete(
-    authController.protect,
     authController.restrictTo('admin', 'lead-guide'),
     tourController.deleteTour
   );
@@ -35,7 +39,7 @@ tourRouter
 //     authController.protect,
 //     authController.restrictTo('user'),
 //     reviewController.createReview
-//   ); 
+//   );
 // c2
 tourRouter.use('/:tourID/reviews/', reviewRouter);
 module.exports = tourRouter;
