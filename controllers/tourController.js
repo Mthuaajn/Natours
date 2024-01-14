@@ -1,8 +1,5 @@
-const fs = require('fs');
 const Tour = require('./../models/ToursModels');
 const { Z_ERRNO } = require('zlib');
-const APIFeatures = require('./../utils/APIFeatures');
-const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 const factory = require('./handlerFactory');
 exports.checkId = (req, res, next, val) => {
@@ -21,36 +18,9 @@ exports.aliasTopTours = (req, res, next) => {
   req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
   next();
 };
-exports.getAllTour = catchAsync(async (req, res, next) => {
-  // EXECUTE QUERY
-  const features = new APIFeatures(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .fields()
-    .pagination();
-  const tours = await features.query;
-  // SEND RESPONSE
-  res.status(200).json({
-    status: 'success',
-    result: tours.length,
-    data: {
-      tours: tours,
-    },
-  });
-});
-exports.getTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.id);
-  // const tour = await Tour.find({_id : req.params.id});
-  if (!tour) {
-    return next(new AppError('no tour that found id', 404));
-  }
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tours: tour,
-    },
-  });
-});
+exports.getAllTour = factory.getAll(Tour);
+
+exports.getTour = factory.getOne(Tour, { path: 'reviews' });
 
 exports.updateTour = factory.updateOne(Tour);
 
