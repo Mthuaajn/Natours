@@ -114,6 +114,9 @@ const TourSchema = new mongoose.Schema(
   }
 );
 
+TourSchema.index({ price: 1, ratingsAverage: -1 });
+TourSchema.index({ slug: 1 });
+
 // document middleware
 TourSchema.pre('save', function (next) {
   this.slug = slug(this.name, { lower: true });
@@ -170,7 +173,6 @@ TourSchema.virtual('reviews', {
   foreignField: 'tour',
   localField: '_id',
 });
-
 
 const tour = mongoose.model('Tour', TourSchema);
 module.exports = tour;
