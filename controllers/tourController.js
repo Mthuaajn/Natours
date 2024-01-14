@@ -4,6 +4,7 @@ const { Z_ERRNO } = require('zlib');
 const APIFeatures = require('./../utils/APIFeatures');
 const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
+const factory = require('./handlerFactory');
 exports.checkId = (req, res, next, val) => {
   let id = req.params.id * 1;
   if (id > tours.length) {
@@ -62,16 +63,8 @@ exports.updateTour = catchAsync(async (req, res, next) => {
     },
   });
 });
-exports.deleteTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndDelete(req.params.id);
-  if (!tour) {
-    return next(new AppError('no tour that found id ', 404));
-  }
-  res.status(204).json({
-    status: 'success',
-    message: 'delete success',
-  }); 
-});
+
+exports.deleteTour = factory.deleteOne(Tour);
 
 exports.createTour = catchAsync(async (req, res, next) => {
   const newTour = await Tour.create(req.body);

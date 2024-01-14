@@ -35,7 +35,7 @@ tourRouter
 //     authController.protect,
 //     authController.restrictTo('user'),
 //     reviewController.createReview
-//   );
+//   ); 
 // c2
 tourRouter.use('/:tourID/reviews/', reviewRouter);
 module.exports = tourRouter;
