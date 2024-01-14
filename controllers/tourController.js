@@ -51,31 +51,12 @@ exports.getTour = catchAsync(async (req, res, next) => {
     },
   });
 });
-exports.updateTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: tour,
-    },
-  });
-});
+
+exports.updateTour = factory.updateOne(Tour);
 
 exports.deleteTour = factory.deleteOne(Tour);
 
-exports.createTour = catchAsync(async (req, res, next) => {
-  const newTour = await Tour.create(req.body);
-
-  res.status(201).json({
-    status: 'success',
-    data: {
-      tours: newTour,
-    },
-  });
-});
+exports.createTour = factory.createOne(Tour);
 
 module.exports.getTourStats = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([

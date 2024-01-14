@@ -74,9 +74,6 @@ exports.updateUser = (req, res) => {
 
 exports.deleteUser = factory.deleteOne(User);
 
-exports.createUser = (req, res) => {
-  res.status(500).json({
-    status: 'success',
-    message: 'fail',
-  });
-};
+exports.createUser = factory.createOne(User);
+
+exports.updateUser = factory.updateOne(User);
