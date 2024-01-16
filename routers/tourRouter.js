@@ -24,6 +24,12 @@ tourRouter
   );
 
 tourRouter
+  .route('/tour-within/:distance/center/:latlng/unit/:unit')
+  .get(tourController.getToursWithin);
+// /tour-within/233/center/-41,45/unit/mi
+// /tour-within?distance=233&center=41,45&unit=mi
+
+tourRouter
   .route('/:id')
   .get(tourController.getTour)
   .patch(tourController.updateTour)
