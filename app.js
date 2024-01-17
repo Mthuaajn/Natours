@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
 const rateLimit = require('express-rate-limit');
@@ -15,6 +16,9 @@ const appError = require('./utils/appError.js');
 const app = express();
 process.noDeprecation = true;
 
+// set view pug
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
 // 1) global middleware
 // middleware set security headers
 app.use(helmet());
@@ -42,7 +46,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // body parse reading data from body into req.body
 app.use(express.json({ limit: '10kb' })); // gioi han luong du lieu la 10kb
-app.use(express.static(`${__dirname}/public`));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // limit request from same api
 const limiter = rateLimit({
@@ -59,6 +63,9 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/', (req, res, next) => {
+  res.status(200).render('base');
+});
 // Router
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
