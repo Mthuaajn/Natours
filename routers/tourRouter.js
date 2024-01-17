@@ -29,6 +29,13 @@ tourRouter
 // /tour-within/233/center/-41,45/unit/mi
 // /tour-within?distance=233&center=41,45&unit=mi
 
+
+tourRouter
+  .route('/distances/:latlng/unit/:unit')
+  .get(tourController.getDistances);
+// /distances/-41,45/unit/mi
+// /distances?center=41,45&unit=mi
+
 tourRouter
   .route('/:id')
   .get(tourController.getTour)

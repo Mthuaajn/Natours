@@ -160,10 +160,10 @@ TourSchema.post(/^find/, function (docs, next) {
   next();
 });
 
-TourSchema.pre('aggregate', function (next) {
-  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-  next();
-});
+// TourSchema.pre('aggregate', function (next) {
+//   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+//   next();
+// });
 
 TourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
