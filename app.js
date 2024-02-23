@@ -12,6 +12,7 @@ const ErrorHandlerController = require('./controllers/ErrorController.js');
 const tourRouter = require('./routers/tourRouter.js');
 const userRouter = require('./routers/userRouter.js');
 const reviewRouter = require('./routers/reviewRoute.js');
+const viewRouter = require('./routers/ViewRoute.js');
 const appError = require('./utils/appError.js');
 const app = express();
 process.noDeprecation = true;
@@ -63,9 +64,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', (req, res, next) => {
-  res.status(200).render('base');
-});
+app.use('/', viewRouter);
+
 // Router
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
