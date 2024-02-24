@@ -2,8 +2,7 @@ const express = require('express');
 const viewRouter = express.Router();
 const viewController = require('../controllers/viewController');
 
-viewRouter.get('/', viewController.getHomePage);
-viewRouter.get('/overview', viewController.getOverview);
-viewRouter.get('/tour', viewController.getTour);
+viewRouter.get('/', viewController.getOverview);
+viewRouter.get('/tour/:slug', viewController.getTour);
 
 module.exports = viewRouter;

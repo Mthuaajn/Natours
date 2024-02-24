@@ -23,6 +23,17 @@ app.set('views', path.join(__dirname, 'views'));
 // 1) global middleware
 // middleware set security headers
 app.use(helmet());
+const mapboxDomains = ['https://api.mapbox.com', 'https://events.mapbox.com'];
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      connectSrc: ["'self'", ...mapboxDomains],
+      scriptSrc: ["'self'", ...mapboxDomains],
+      workerSrc: ["'self'", 'blob:'],
+    },
+  })
+);
+
 // middleware against nosql injection
 app.use(sanitize());
 // middleware against html injection db
