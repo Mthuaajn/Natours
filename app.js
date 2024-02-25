@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const cors = require('cors');
 const xss = require('xss-clean');
 const sanitize = require('express-mongo-sanitize');
 const hpp = require('hpp');
@@ -14,6 +15,7 @@ const userRouter = require('./routers/userRouter.js');
 const reviewRouter = require('./routers/reviewRoute.js');
 const viewRouter = require('./routers/ViewRoute.js');
 const appError = require('./utils/appError.js');
+const cookiesParser = require('cookie-parser');
 const app = express();
 process.noDeprecation = true;
 
@@ -22,17 +24,23 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 // 1) global middleware
 // middleware set security headers
-app.use(helmet());
-const mapboxDomains = ['https://api.mapbox.com', 'https://events.mapbox.com'];
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      connectSrc: ["'self'", ...mapboxDomains],
-      scriptSrc: ["'self'", ...mapboxDomains],
-      workerSrc: ["'self'", 'blob:'],
-    },
-  })
-);
+// app.use(helmet());
+// app.use(cors());
+// const mapboxDomains = [
+//   'https://api.mapbox.com',
+//   'https://events.mapbox.com',
+//   'https://cdnjs.cloudflare.com',
+//   'http://localhost:3000',
+// ];
+// app.use(
+//   helmet.contentSecurityPolicy({
+//     directives: {
+//       connectSrc: ["'self'", ...mapboxDomains],
+//       scriptSrc: ["'self'", ...mapboxDomains],
+//       workerSrc: ["'self'", 'blob:'],
+//     },
+//   })
+// );
 
 // middleware against nosql injection
 app.use(sanitize());
@@ -59,7 +67,7 @@ if (process.env.NODE_ENV === 'development') {
 // body parse reading data from body into req.body
 app.use(express.json({ limit: '10kb' })); // gioi han luong du lieu la 10kb
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(cookiesParser());
 // limit request from same api
 const limiter = rateLimit({
   max: 100,

@@ -42,6 +42,7 @@ exports.Signup = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
+    photo: req.body.photo,
   });
   createAndSendToken(newUser, 201, res);
 });
@@ -70,6 +71,8 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
   if (!token) {
     return next(
@@ -95,6 +98,32 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   // Grant access to protected route
   req.user = FreshUser;
+  next();
+});
+
+exports.isLoggerTo = catchAsync(async (req, res, next) => {
+  if (req.cookies.jwt) {
+    // 1) Verification token
+    const decoded = await promisify(jwt.verify)(
+      req.cookies.jwt,
+      process.env.JWT_SECRET
+    );
+    console.log(decode);
+    // 2) Check if user still exists
+    const freshUser = await User.findById(decoded.id);
+    if (!freshUser) {
+      return next();
+    }
+
+    // 3) Check if user changed password after the token was issued
+    if (freshUser.passwordChangeAfter(decoded.iat)) {
+      return next();
+    }
+
+    // Grant access to protected route
+    res.locals.user = freshUser;
+    return next();
+  }
   next();
 });
 
