@@ -5,6 +5,7 @@ const userRouter = express.Router();
 
 userRouter.post('/signup', authController.Signup);
 userRouter.post('/login', authController.Login);
+userRouter.get('/logout', authController.logout);
 
 //all route is protect
 userRouter.use(authController.protect);

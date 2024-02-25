@@ -63,6 +63,14 @@ exports.Login = catchAsync(async (req, res, next) => {
   createAndSendToken(user, 200, res);
 });
 
+exports.logout = (req, res) => {
+  res.cookie('jwt', 'logout', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+  res.status(200).json({ status: 'success' });
+};
+
 exports.protect = catchAsync(async (req, res, next) => {
   // 1)getting token and check token is exist
   let token;
@@ -101,31 +109,35 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.isLoggerTo = catchAsync(async (req, res, next) => {
+exports.isLoggerTo = async (req, res, next) => {
   if (req.cookies.jwt) {
-    // 1) Verification token
-    const decoded = await promisify(jwt.verify)(
-      req.cookies.jwt,
-      process.env.JWT_SECRET
-    );
-    console.log(decode);
-    // 2) Check if user still exists
-    const freshUser = await User.findById(decoded.id);
-    if (!freshUser) {
+    try {
+      // 1) Verification token
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET
+      );
+      console.log(decode);
+      // 2) Check if user still exists
+      const freshUser = await User.findById(decoded.id);
+      if (!freshUser) {
+        return next();
+      }
+
+      // 3) Check if user changed password after the token was issued
+      if (freshUser.passwordChangeAfter(decoded.iat)) {
+        return next();
+      }
+
+      // Grant access to protected route
+      res.locals.user = freshUser;
+      return next();
+    } catch (err) {
       return next();
     }
-
-    // 3) Check if user changed password after the token was issued
-    if (freshUser.passwordChangeAfter(decoded.iat)) {
-      return next();
-    }
-
-    // Grant access to protected route
-    res.locals.user = freshUser;
-    return next();
   }
   next();
-});
+};
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
