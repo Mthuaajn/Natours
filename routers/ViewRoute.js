@@ -8,4 +8,10 @@ viewRouter.get('/', viewController.getOverview);
 viewRouter.get('/tour/:slug', viewController.getTour);
 
 viewRouter.get('/login', viewController.getLoginForm);
+viewRouter.get('/me', authController.protect, viewController.getAccount);
+viewRouter.post(
+  '/submit-user-data',
+  authController.protect,
+  viewController.UpdateUserData
+);
 module.exports = viewRouter;

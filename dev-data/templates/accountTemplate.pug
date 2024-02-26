@@ -48,7 +48,7 @@ main.main
     .user-view__content
       .user-view__form-container
         h2.heading-secondary.ma-bt-md Your account settings
-        form.form.form-user-data
+        form.form.form-user-data(action="/update-me-data",method="POST")
           .form__group
             label.form__label(for='name') Name
             input#name.form__input(type='text', value='Jonas Schmedtmann', required)

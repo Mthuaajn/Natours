@@ -68,6 +68,8 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json({ limit: '10kb' })); // gioi han luong du lieu la 10kb
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookiesParser());
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
 // limit request from same api
 const limiter = rateLimit({
   max: 100,
