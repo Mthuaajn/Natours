@@ -3,7 +3,7 @@ import '@babel/polyfill';
 import { displayMap } from './mapbox';
 import { login } from './login';
 import { logout } from './logout';
-import { updateNameAndEmail, updatePassword } from './updateSettings';
+import { updateSettings } from './updateSettings';
 // DOM ELEMENTS
 const mapBox = document.getElementById('map');
 const loginForm = document.querySelector('.form--login');
@@ -27,9 +27,12 @@ if (loginForm) {
 if (UpdateUserDateForm) {
   UpdateUserDateForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    updateNameAndEmail(name, email);
+    const form = new FormData();
+    form.append('name', document.getElementById('name').value);
+    form.append('email', document.getElementById('email').value);
+    form.append('photo', document.getElementById('photo').files[0]);
+    console.log(form);
+    updateSettings(form, 'data');
   });
 }
 
@@ -40,7 +43,10 @@ if (UpdateUserPasswordForm) {
     const passwordCurrent = document.getElementById('password-current').value;
     const password = document.getElementById('password').value;
     const passwordConfirm = document.getElementById('password-confirm').value;
-    await updatePassword(passwordCurrent, password, passwordConfirm);
+    await updateSettings(
+      { passwordCurrent, password, passwordConfirm },
+      'password'
+    );
     document.querySelector('.btn--save-password').textContent = 'Save password';
     document.getElementById('password-current').value = '';
     document.getElementById('password').value = '';
