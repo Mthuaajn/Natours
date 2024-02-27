@@ -2,7 +2,8 @@ const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 const User = require('./../models/UserModels');
 const factory = require('./handlerFactory');
-
+const sharp = require('sharp');
+const multer = require('multer');
 const filterObj = (obj, ...arrayObjFilter) => {
   const newObj = {};
   arrayObjFilter.forEach((el) => {
@@ -12,7 +13,41 @@ const filterObj = (obj, ...arrayObjFilter) => {
   });
   return newObj;
 };
+// tạo bôj lọc multerFilter và tạo nơi lưu trữ hình ảnh multerStorage trong đĩa cứng
+// const multerStorage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'public/img/users');
+//   },
+//   filename: (req, file, cb) => {
+//     const ext = file.mimetype.split('/')[1];
+//     cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
+//   },
+// });
 
+//  tạo nơi lữu trữ trên  bộ nhớ
+const multerStorage = multer.memoryStorage();
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true);
+  } else {
+    cb(new AppError('Not an image! Please upload only image', 400), false);
+  }
+};
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+exports.resizeUserPhoto = (req, res, next) => {
+  if (!req.file) return next();
+  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+  sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quanlity: 90 })
+    .toFile(`public/img/users/${req.file.filename}`);
+  next();
+};
+exports.UploadFile = upload.single('photo');
 exports.deleteMe = catchAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user.id, { active: false });
 
@@ -34,6 +69,9 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   }
   //2) filter out unwanted fields names that are not allowed to be updated
   const filterBody = filterObj(req.body, 'name', 'email');
+  if (req.file) {
+    filterBody.photo = req.file.filename;
+  }
   // 3) update user document
   const newUserUpdate = await User.findByIdAndUpdate(req.user.id, filterBody, {
     new: true,
