@@ -5,7 +5,7 @@ const catchAsync = require('./../utils/catchAsync');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const AppError = require('./../utils/appError');
-const sendEmail = require('./../utils/email');
+const Email = require('./../utils/email');
 const { decode } = require('punycode');
 dotenv.config({ path: './../config.env' });
 
@@ -36,14 +36,9 @@ const createAndSendToken = (user, statusCode, res) => {
 };
 
 exports.Signup = catchAsync(async (req, res, next) => {
-  const newUser = await User.create({
-    role: req.body.role,
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
-    photo: req.body.photo,
-  });
+  const newUser = await User.create(req.body);
+  const url = `localhost://${req.get('host')}/me`;
+  await new Email(newUser, url).sendWelcome();
   createAndSendToken(newUser, 201, res);
 });
 
@@ -170,11 +165,11 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   . \nIF you didn't forget your password, please ignore this email!`;
 
   try {
-    await sendEmail({
-      email: user.email,
-      subject: 'Yours password reset token (valid for 10 min)',
-      message,
-    });
+    // await sendEmail({
+    //   email: user.email,
+    //   subject: 'Yours password reset token (valid for 10 min)',
+    //   message,
+    // });
 
     res.status(200).json({
       status: 'success',
