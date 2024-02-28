@@ -29,7 +29,6 @@ tourRouter
 // /tour-within/233/center/-41,45/unit/mi
 // /tour-within?distance=233&center=41,45&unit=mi
 
-
 tourRouter
   .route('/distances/:latlng/unit/:unit')
   .get(tourController.getDistances);
@@ -39,7 +38,12 @@ tourRouter
 tourRouter
   .route('/:id')
   .get(tourController.getTour)
-  .patch(tourController.updateTour)
+  .patch(
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.uploadTourImages,
+    tourController.resizeTourImages,
+    tourController.updateTour
+  )
   .delete(
     authController.restrictTo('admin', 'lead-guide'),
     tourController.deleteTour
