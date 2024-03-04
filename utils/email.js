@@ -11,6 +11,7 @@ module.exports = class Email {
 
   newTransport() {
     if (process.env.NODE_ENV === 'production') {
+      // Sendgrid  chưa thể kích hoạt được mail chỉ có thể gửi mail bằng mailtrap
       return 1;
     }
     return nodemailer.createTransport({
