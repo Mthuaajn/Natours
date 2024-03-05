@@ -4,12 +4,14 @@ import { displayMap } from './mapbox';
 import { login } from './login';
 import { logout } from './logout';
 import { updateSettings } from './updateSettings';
+import { bookTour } from './stripe';
 // DOM ELEMENTS
 const mapBox = document.getElementById('map');
 const loginForm = document.querySelector('.form--login');
 const logoutBtn = document.querySelector('.nav__el--logout');
 const UpdateUserDateForm = document.querySelector('.form-user-data');
 const UpdateUserPasswordForm = document.querySelector('.form-user-settings');
+const bookBtn = document.getElementById('book-tour');
 if (mapBox) {
   const locations = JSON.parse(mapBox.dataset.locations);
   displayMap(locations);
@@ -56,4 +58,13 @@ if (UpdateUserPasswordForm) {
 
 if (logoutBtn) {
   logoutBtn.addEventListener('click', logout);
+}
+
+if (bookBtn) {
+  bookBtn.addEventListener('click', (e) => {
+    e.target.textContent = 'Processing...';
+    // input có thuộc tính là data-tour-id sau khi sử lí api thì thành là tourId
+    const { tourId } = e.target.dataset;
+    bookTour(tourId);
+  });
 }
