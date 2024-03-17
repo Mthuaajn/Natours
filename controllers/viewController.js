@@ -12,7 +12,7 @@ module.exports.getTour = catchAsync(async (req, res) => {
     path: 'reviews  ',
     select: 'review rating user',
   });
-  console.log(tour);
+  // console.log(tour);
   res.status(200).render('tour', {
     tour,
     title: `${tour.name} Tour`,
@@ -41,7 +41,7 @@ module.exports.getMyTours = catchAsync(async (req, res) => {
   });
 });
 module.exports.UpdateUserData = catchAsync(async (req, res) => {
-  console.log('body', req.body);
+  // console.log('body', req.body);
   const user = await User.findByIdAndUpdate(
     req.user.id,
     {

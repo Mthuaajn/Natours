@@ -113,7 +113,7 @@ exports.isLoggerTo = async (req, res, next) => {
         req.cookies.jwt,
         process.env.JWT_SECRET
       );
-      console.log(decode);
+      // console.log(decode);
       // 2) Check if user still exists
       const freshUser = await User.findById(decoded.id);
       if (!freshUser) {

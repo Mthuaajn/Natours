@@ -18,6 +18,7 @@ const bookingRouter = require('./routers/bookingRoute.js');
 const appError = require('./utils/appError.js');
 const cookiesParser = require('cookie-parser');
 const app = express();
+const compression = require('compression');
 process.noDeprecation = true;
 
 // set view pug
@@ -32,7 +33,7 @@ app.set('views', path.join(__dirname, 'views'));
 //   'https://events.mapbox.com',
 //   'https://cdnjs.cloudflare.com',
 //   'http://localhost:3000',
-// ];
+// ]; 
 // app.use(
 //   helmet.contentSecurityPolicy({
 //     directives: {
@@ -60,6 +61,8 @@ app.use(
     ],
   })
 );
+
+app.use(compression());
 // middleware write log production and dev
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
