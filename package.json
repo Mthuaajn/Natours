@@ -4,8 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "dev": " node sever.js",
-    "start": " nodemon sever.js",
+    "dev": " nodemon sever.js",
+    "start": " node sever.js",
     "start:prod": "set NODE_ENV=production&& nodemon sever.js",
     "debug": "ndb sever.js",
     "import": "node ./dev-data/data/import-dev-data --import",
