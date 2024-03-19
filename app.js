@@ -21,28 +21,34 @@ const app = express();
 const compression = require('compression');
 process.noDeprecation = true;
 
+app.enable('trust proxy');
 // set view pug
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 // 1) global middleware
 // middleware set security headers
-// app.use(helmet());
-// app.use(cors());
-// const mapboxDomains = [
-//   'https://api.mapbox.com',
-//   'https://events.mapbox.com',
-//   'https://cdnjs.cloudflare.com',
-//   'http://localhost:3000',
-// ];
-// app.use(
-//   helmet.contentSecurityPolicy({
-//     directives: {
-//       connectSrc: ["'self'", ...mapboxDomains],
-//       scriptSrc: ["'self'", ...mapboxDomains],
-//       workerSrc: ["'self'", 'blob:'],
-//     },
-//   })
-// );
+app.use(helmet());
+app.use(cors());
+const allowedDomains = [
+  "'self'",
+  'https://api.mapbox.com',
+  'https://events.mapbox.com',
+  'https://cdnjs.cloudflare.com',
+  'http://localhost:3000',
+  'https://js.stripe.com',
+];
+
+// Cấu hình CSP
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", ...allowedDomains],
+      connectSrc: ["'self'", ...allowedDomains],
+      workerSrc: ["'self'", 'blob:'],
+    },
+  })
+);
 
 // middleware against nosql injection
 app.use(sanitize());
