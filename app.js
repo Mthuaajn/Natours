@@ -33,7 +33,7 @@ app.set('views', path.join(__dirname, 'views'));
 //   'https://events.mapbox.com',
 //   'https://cdnjs.cloudflare.com',
 //   'http://localhost:3000',
-// ]; 
+// ];
 // app.use(
 //   helmet.contentSecurityPolicy({
 //     directives: {
