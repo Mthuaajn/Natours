@@ -11,7 +11,8 @@
     "import": "node ./dev-data/data/import-dev-data --import",
     "delete": "node ./dev-data/data/import-dev-data --delete",
     "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
-    "build:js": "parcel build ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
+    "build:js": "parcel build ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
+    "heroku-postbuild": "npm run start"
   },
   "author": "minh thuan",
   "license": "ISC",
@@ -48,6 +49,7 @@
     "parcel-bundler": "^1.12.5"
   },
   "engines": {
-    "node": "14.17.0"
+    "node": "14.17.0",
+    "npm": "10.4.0"
   }
 }
