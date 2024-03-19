@@ -11,8 +11,7 @@
     "import": "node ./dev-data/data/import-dev-data --import",
     "delete": "node ./dev-data/data/import-dev-data --delete",
     "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
-    "build:js": "parcel build ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
-    "heroku-postbuild": "npm run start"
+    "build:js": "parcel build ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
   },
   "author": "minh thuan",
   "license": "ISC",
